@@ -31,6 +31,73 @@ const tasks = [
   },
 ];
 
+const themes = {
+  default: {
+    '--base-text-color': '#212529',
+    '--header-bg': '#007bff',
+    '--header-text-color': '#fff',
+    '--default-btn-bg': '#007bff',
+    '--default-btn-text-color': '#fff',
+    '--default-btn-hover-bg': '#0069d9',
+    '--default-btn-border-color': '#0069d9',
+    '--danger-btn-bg': '#dc3545',
+    '--danger-btn-text-color': '#fff',
+    '--danger-btn-hover-bg': '#bd2130',
+    '--danger-btn-border-color': '#dc3545',
+    '--input-border-color': '#ced4da',
+    '--input-bg-color': '#fff',
+    '--input-text-color': '#495057',
+    '--input-focus-bg-color': '#fff',
+    '--input-focus-text-color': '#495057',
+    '--input-focus-border-color': '#80bdff',
+    '--input-focus-box-shadow': '0 0 0 0.2rem rgba(0, 123, 255, 0.25)',
+  },
+  dark: {
+    '--base-text-color': '#212529',
+    '--header-bg': '#343a40',
+    '--header-text-color': '#fff',
+    '--default-btn-bg': '#58616b',
+    '--default-btn-text-color': '#fff',
+    '--default-btn-hover-bg': '#292d31',
+    '--default-btn-border-color': '#343a40',
+    '--default-btn-focus-box-shadow':
+      '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+    '--danger-btn-bg': '#b52d3a',
+    '--danger-btn-text-color': '#fff',
+    '--danger-btn-hover-bg': '#88222c',
+    '--danger-btn-border-color': '#88222c',
+    '--input-border-color': '#ced4da',
+    '--input-bg-color': '#fff',
+    '--input-text-color': '#495057',
+    '--input-focus-bg-color': '#fff',
+    '--input-focus-text-color': '#495057',
+    '--input-focus-border-color': '#78818a',
+    '--input-focus-box-shadow': '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+  },
+  light: {
+    '--base-text-color': '#212529',
+    '--header-bg': '#fff',
+    '--header-text-color': '#212529',
+    '--default-btn-bg': '#fff',
+    '--default-btn-text-color': '#212529',
+    '--default-btn-hover-bg': '#e8e7e7',
+    '--default-btn-border-color': '#343a40',
+    '--default-btn-focus-box-shadow':
+      '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+    '--danger-btn-bg': '#f1b5bb',
+    '--danger-btn-text-color': '#212529',
+    '--danger-btn-hover-bg': '#ef808a',
+    '--danger-btn-border-color': '#e2818a',
+    '--input-border-color': '#ced4da',
+    '--input-bg-color': '#fff',
+    '--input-text-color': '#495057',
+    '--input-focus-bg-color': '#fff',
+    '--input-focus-text-color': '#495057',
+    '--input-focus-border-color': '#78818a',
+    '--input-focus-box-shadow': '0 0 0 0.2rem rgba(141, 143, 146, 0.25)',
+  },
+};
+
 (function (arrOfTasks) {
 
   // Elements
@@ -38,6 +105,7 @@ const tasks = [
   const addTaskForm = document.forms.addTask;
   const taskTitle = addTaskForm.title;
   const taskBody = addTaskForm.body;
+  const themeSelect = document.querySelector('#themeSelect');
 
   // Render all tasks 
   const renderAllTasks = (tasks) => {
@@ -103,9 +171,9 @@ const tasks = [
   };
 
   // Delete task
-  const onDelClick = (el) => {
-    if (el.target.classList.contains('delete-btn')) {
-      const task = el.target.closest('[data-task-id]');
+  const onDelClick = (evt) => {
+    if (evt.target.classList.contains('delete-btn')) {
+      const task = evt.target.closest('[data-task-id]');
       const id = task.dataset.taskId;
       tasksList.removeChild(task);
       arrOfTasks.forEach((el, i) => {
@@ -119,26 +187,38 @@ const tasks = [
   // Confirm task
   const ifCompleted = (parent) => {
     arrOfTasks.forEach((el) => {
-      if(el._id === parent.dataset.taskId) {
+      if (el._id === parent.dataset.taskId) {
         el.completed ? el.completed = false : el.completed = true;
-        console.log(el.completed);
         parent.classList.contains('text-success') ? parent.classList.remove('text-success') : parent.classList.add('text-success');
       }
     });
   }
 
-  const onCompleteClick = (el) => {
-    if (el.target.classList.contains('complete-btn')) {
-      const parent = el.target.closest('li');
+  const onCompleteClick = (evt) => {
+    if (evt.target.classList.contains('complete-btn')) {
+      const parent = evt.target.closest('li');
       ifCompleted(parent);
     }
+  }
+
+  // Change theme
+  const onThemeChange = (evt) => {
+    const selectedTheme = themeSelect.value;
+    setTheme(selectedTheme);
+  }
+
+  const setTheme = (selectedTheme) => {
+    const theme = themes[selectedTheme];
+    Object.entries(theme).forEach(([key, val]) => {
+      document.documentElement.style.setProperty(key, val);
+    })
   }
 
   renderAllTasks(arrOfTasks);
   addTaskForm.addEventListener('submit', onFormSubmit);
   tasksList.addEventListener('click', onDelClick);
   tasksList.addEventListener('click', onCompleteClick);
-
+  themeSelect.addEventListener('change', onThemeChange);
 
 
 })(tasks);
