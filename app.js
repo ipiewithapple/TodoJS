@@ -99,7 +99,6 @@ const themes = {
 };
 
 (function (arrOfTasks) {
-
   // Elements
   const tasksList = document.querySelector('.list-group');
   const addTaskForm = document.forms.addTask;
@@ -202,9 +201,10 @@ const themes = {
   }
 
   // Change theme
-  const onThemeChange = (evt) => {
+  const onThemeChange = () => {
     const selectedTheme = themeSelect.value;
     setTheme(selectedTheme);
+    localStorage.setItem('theme', selectedTheme);
   }
 
   const setTheme = (selectedTheme) => {
@@ -213,6 +213,12 @@ const themes = {
       document.documentElement.style.setProperty(key, val);
     })
   }
+  // Set theme after reload page
+  let lastTheme = localStorage.getItem('theme') || 'default';
+  themeSelect.value = lastTheme;
+  setTheme(lastTheme);
+
+
 
   renderAllTasks(arrOfTasks);
   addTaskForm.addEventListener('submit', onFormSubmit);
